@@ -1,5 +1,5 @@
 <div align="center">
-<img width="300" height="300" src="./res/rawbit.png"/>
+<img width="640" height="320" src="https://raw.githubusercontent.com/cartercanedy/rawbit/refs/heads/master/res/rawbit.png"/>
 <br>
 
 # rawbit
@@ -24,6 +24,9 @@ while offering the ability to manipulate metadata and customize file name format
 *__all written in Rust, btw...__*
 
 ## Installation
+
+### Pre-built binaries
+Pre-built binaries releases are available for download from the latest [GitHub release](https://github.com/cartercanedy/rawbit/releases/latest).
 
 I plan on making binary releases available for all major platforms via package managers.
 In the meantime, there are [AUR](https://aur.archlinux.org) & [crates.io](https://crates.io) packages available:
@@ -68,41 +71,42 @@ rawbit -i"./raw" -o"./dng" -F"%Y-%m-%d_{camera.model}_{lens.model}_{image.origin
 
 ## Usage
 
-<div>
 <pre>
-<span style="color:teal;">rawbit</span> <span style="color:teal;">[OPTIONS]</span> <span style="color:teal;">--out-dir</span><span style="color:teal;"> </span><span style="color:teal;">&lt;DIR&gt;</span> <span style="color:teal;">&lt;--in-dir &lt;DIR&gt;|FILES&gt;</span>
-<br>
-
-<span style="color:olive;">Arguments:</span>
-  <span style="color:teal;">\[FILES\]...</span>
-&nbsp;&nbsp;&nbsp;&nbsp;individual files to convert
-
-<span style="color:olive;">Options:</span>
-  <span style="color:teal;">-i</span>, <span style="color:teal;">--in-dir</span><span style="color:teal;"> </span><span style="color:teal;">&lt;DIR&gt;</span>
-&nbsp;&nbsp;&nbsp;&nbsp;directory containing raw files to convert
-  <span style="color:teal;">-o</span>, <span style="color:teal;">--out-dir</span><span style="color:teal;"> </span><span style="color:teal;">&lt;DIR&gt;</span>
-&nbsp;&nbsp;&nbsp;&nbsp;directory to write converted DNGs
-  <span style="color:teal;">-F</span>, <span style="color:teal;">--format</span><span style="color:teal;"> </span><span style="color:teal;">&lt;FORMAT&gt;</span>
-&nbsp;&nbsp;&nbsp;&nbsp;filename format of converted DNGs; see https://docs.rs/rawbit for info on syntax
-  <span style="color:teal;">-a</span>, <span style="color:teal;">--artist</span><span style="color:teal;"> </span><span style="color:teal;">&lt;ARTIST&gt;</span>
-&nbsp;&nbsp;&nbsp;&nbsp;value of the &quot;artist&quot; field in converted DNGs
-      <span style="color:teal;">--embed-original</span>
-&nbsp;&nbsp;&nbsp;&nbsp;embed the original raw image in the converted DNG
-&nbsp;&nbsp;&nbsp;&nbsp;NOTE: conversion may take considerably longer
-  <span style="color:teal;">-j</span>, <span style="color:teal;">--n-threads</span><span style="color:teal;"> </span><span style="color:teal;">&lt;N&gt;</span>
-&nbsp;&nbsp;&nbsp;&nbsp;number of threads to use while processing input images, defaults to number of CPUs
-  <span style="color:teal;">-q</span>, <span style="color:teal;">--quiet</span>
-&nbsp;&nbsp;&nbsp;&nbsp;quiet output, only emit critical errors
-  <span style="color:teal;">-v</span><span style="color:teal;">...</span>
-&nbsp;&nbsp;&nbsp;&nbsp;increase log verbosity; specify multiple times to increase verbosity
-  <span style="color:teal;">-f</span>, <span style="color:teal;">--force</span>
-&nbsp;&nbsp;&nbsp;&nbsp;overwrite existing files, if they exist
-  <span style="color:teal;">-h</span>, <span style="color:teal;">--help</span>
-&nbsp;&nbsp;&nbsp;&nbsp;Print help
-  <span style="color:teal;">-V</span>, <span style="color:teal;">--version</span>
-&nbsp;&nbsp;&nbsp;&nbsp;Print version
+<span style="color: #F5F1DE">Usage:</span> <span style="color: #00aaaa">rawbit</span> <span style="color: #00aaaa">[OPTIONS]</span> <span style="color: #00aaaa">--out-dir</span><span style="color: #00aaaa"> </span><span style="color: #00aaaa">&lt;DIR&gt;</span> <span style="color: #00aaaa">&lt;--in-dir &lt;DIR&gt;|FILES&gt;</span>
+<span style="color: #aa5500">Arguments:</span>
+  <span style="color: #00aaaa">[FILES]...</span>
+          individual files to convert
+<span style="color: #aa5500">Options:</span>
+  <span style="color: #00aaaa">-i</span>, <span style="color: #00aaaa">--in-dir</span><span style="color: #00aaaa"> </span><span style="color: #00aaaa">&lt;DIR&gt;</span>
+          directory containing raw files to convert
+  <span style="color: #00aaaa">-o</span>, <span style="color: #00aaaa">--out-dir</span><span style="color: #00aaaa"> </span><span style="color: #00aaaa">&lt;DIR&gt;</span>
+          directory to write converted DNGs
+  <span style="color: #00aaaa">-F</span>, <span style="color: #00aaaa">--format</span><span style="color: #00aaaa"> </span><span style="color: #00aaaa">&lt;FORMAT&gt;</span>
+          filename format of converted DNGs; see https://docs.rs/rawbit for info on syntax
+  <span style="color: #00aaaa">-a</span>, <span style="color: #00aaaa">--artist</span><span style="color: #00aaaa"> </span><span style="color: #00aaaa">&lt;ARTIST&gt;</span>
+          value of the "artist" field in converted DNGs
+  <span style="color: #00aaaa">-e</span>, <span style="color: #00aaaa">--embed-raw</span>
+          embed the original raw image in the converted DNG
+          NOTE: conversion may take considerably longer
+  <span style="color: #00aaaa">-f</span>, <span style="color: #00aaaa">--force</span>
+          overwrite existing files, if they exist
+  <span style="color: #00aaaa">-r</span>, <span style="color: #00aaaa">--recurse</span>
+          ingest images from subdirectories as well, preserving directory structure in the output
+      <span style="color: #00aaaa">--no-preview</span>
+          Embed image preview in output DNG
+      <span style="color: #00aaaa">--no-thumbnail</span>
+          Embed image thumbnail in output DNG
+  <span style="color: #00aaaa">-j</span>, <span style="color: #00aaaa">--n-threads</span><span style="color: #00aaaa"> [</span><span style="color: #00aaaa">&lt;N&gt;</span><span style="color: #00aaaa">]</span>
+          number of threads to use while processing input images, defaults to number of CPUs
+  <span style="color: #00aaaa">-q</span>, <span style="color: #00aaaa">--quiet</span>
+          quiet output, only emit critical errors
+  <span style="color: #00aaaa">-v</span>, <span style="color: #00aaaa">--verbose</span><span style="color: #00aaaa">...</span>
+          increase log verbosity; specify multiple times to increase verbosity
+  <span style="color: #00aaaa">-h</span>, <span style="color: #00aaaa">--help</span>
+          Print help
+  <span style="color: #00aaaa">-V</span>, <span style="color: #00aaaa">--version</span>
+          Print version
 </pre>
-</div>
 
 ## Filename formatting
 

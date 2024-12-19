@@ -1,5 +1,5 @@
+use clap::{command, Parser, Subcommand};
 use gen_cli_docs::gen_docs;
-use rawbit::clap::{self, command, Parser, Subcommand};
 
 mod gen_cli_docs;
 

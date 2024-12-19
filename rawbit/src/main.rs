@@ -108,6 +108,8 @@ async fn run(args: ImportConfig) -> RawbitResult<()> {
         force,
         embed,
         recurse,
+        no_preview,
+        no_thumbnail,
         ..
     } = args;
 
@@ -140,8 +142,8 @@ async fn run(args: ImportConfig) -> RawbitResult<()> {
         compression: DngCompression::Lossless,
         embedded: embed,
         index: 0,
-        preview: true,
-        thumbnail: true,
+        preview: !no_preview,
+        thumbnail: !no_thumbnail,
         software: "rawbit".into(),
         ..Default::default()
     };

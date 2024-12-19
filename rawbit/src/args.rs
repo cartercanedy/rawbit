@@ -12,9 +12,10 @@ use clap::{
     },
     command, value_parser, ArgAction, Args, Parser,
 };
-use rawler::decoders::supported_extensions;
 use rayon::iter::{IntoParallelIterator as _, ParallelBridge as _, ParallelIterator as _};
 use smlog::{debug, warn};
+
+use rawler::decoders::supported_extensions;
 
 use crate::common::{map_err, AppError, RawbitResult};
 
@@ -35,7 +36,7 @@ const fn cli_style() -> Styles {
 }
 
 #[allow(clippy::struct_excessive_bools)]
-#[derive(Parser)]
+#[derive(Debug, Parser)]
 #[command(
     version,
     about = "A camera RAW image preprocessor and importer",
@@ -61,7 +62,6 @@ pub struct ImportConfig {
         short = 'F',
         long = "format",
         value_name = "FORMAT",
-        value_parser = value_parser!(String).into_resettable(),
         help = "filename format of converted DNGs; see https://docs.rs/rawbit for info on syntax"
     )]
     pub fmt_str: Option<String>,
@@ -70,17 +70,14 @@ pub struct ImportConfig {
         short,
         long,
         value_name = "ARTIST",
-        value_parser = value_parser!(String).into_resettable(),
         help = "value of the \"artist\" field in converted DNGs"
     )]
     pub artist: Option<String>,
 
     #[arg(
         short,
-        long = "embed-original",
-        action = ArgAction::Set,
-        default_value_t = false,
-        num_args = 0..=1,
+        long = "embed-raw",
+        action = ArgAction::SetTrue,
         help = "embed the original raw image in the converted DNG\nNOTE: conversion may take considerably longer"
     )]
     pub embed: bool,
@@ -88,9 +85,7 @@ pub struct ImportConfig {
     #[arg(
         short,
         long,
-        action = ArgAction::Set,
-        default_value_t = false,
-        num_args = 0..=1,
+        action = ArgAction::SetTrue,
         help = "overwrite existing files, if they exist"
     )]
     pub force: bool,
@@ -98,32 +93,24 @@ pub struct ImportConfig {
     #[arg(
         short,
         long,
-        action = ArgAction::Set,
-        default_value_t = false,
-        num_args = 0..=1,
+        action = ArgAction::SetTrue,
         help = "ingest images from subdirectories as well, preserving directory structure in the output"
     )]
     pub recurse: bool,
 
     #[arg(
-        short,
         long,
-        action = ArgAction::Set,
-        default_value_t = true,
-        num_args = 0..=1,
+        action = ArgAction::SetTrue,
         help = "Embed image preview in output DNG"
     )]
-    pub preview: bool,
+    pub no_preview: bool,
 
     #[arg(
-        short,
         long,
-        action = ArgAction::Set,
-        default_value_t = true,
-        num_args = 0..=1,
+        action = ArgAction::SetTrue,
         help = "Embed image thumbnail in output DNG"
     )]
-    pub thumbnail: bool,
+    pub no_thumbnail: bool,
 
     #[arg(
         short = 'j',
@@ -147,7 +134,7 @@ impl ImportConfig {
     }
 }
 
-#[derive(Args)]
+#[derive(Debug, Args)]
 #[group(multiple = false)]
 pub struct LogConfig {
     #[arg(
@@ -167,7 +154,7 @@ pub struct LogConfig {
     pub verbose: u8,
 }
 
-#[derive(Args)]
+#[derive(Debug, Args)]
 #[group(required = true, multiple = false)]
 pub struct RawSource {
     #[arg(
