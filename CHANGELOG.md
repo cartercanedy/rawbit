@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.1.12](https://github.com/cartercanedy/rawbit/compare/v0.1.11...v0.1.12) - 2024-12-21
+
+### Added
+- dry-run mode (#36) (by @cartercanedy) - #36
+
+### Fixed
+- *(doc)* fix readme image links and CLI arg documentation (#32) (by @cartercanedy)
+
+### Contributors
+
+* @cartercanedy
 ## [0.1.9](https://github.com/cartercanedy/rawbit/compare/v0.1.8...v0.1.9) - 2024-12-16
 
 ### Fixed
