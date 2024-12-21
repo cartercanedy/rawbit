@@ -6,7 +6,7 @@ categories = ["multimedia::encoding", "multimedia::images", "command-line-utilit
 keywords = ["imaging", "photography", "camera-RAW", "RAW"]
 license = "MIT"
 repository = "https://github.com/cartercanedy/rawbit"
-version = "0.1.11"
+version = "0.1.12"
 edition = "2021"
 readme = "../README.md"
 
