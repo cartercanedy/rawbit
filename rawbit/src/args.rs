@@ -101,16 +101,23 @@ pub struct ImportConfig {
     #[arg(
         long,
         action = ArgAction::SetTrue,
-        help = "Embed image preview in output DNG"
+        help = "don't embed image preview in output DNG"
     )]
     pub no_preview: bool,
 
     #[arg(
         long,
         action = ArgAction::SetTrue,
-        help = "Embed image thumbnail in output DNG"
+        help = "don't embed image thumbnail in output DNG"
     )]
     pub no_thumbnail: bool,
+
+    #[arg(
+        long,
+        action = ArgAction::SetTrue,
+        help = "only print run information, don't perform conversions or write any data."
+    )]
+    pub dry_run: bool,
 
     #[arg(
         short = 'j',

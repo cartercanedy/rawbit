@@ -9,7 +9,11 @@
     clippy::cargo,
     clippy::cast_possible_wrap
 )]
-#![allow(clippy::enum_glob_use, clippy::multiple_crate_versions)]
+#![allow(
+    clippy::enum_glob_use,
+    clippy::multiple_crate_versions,
+    clippy::module_name_repetitions
+)]
 
 use std::fmt::Display;
 
@@ -31,7 +35,7 @@ mod parse;
 
 use args::{ImportConfig, IngestItem, LogConfig};
 use common::{map_err, AppError, RawbitResult};
-use job::Job;
+use job::{DryRunJob, Job, JobConfig, RawConvertJob};
 
 fn main() -> Result<(), u32> {
     let args = ImportConfig::parse();
@@ -110,6 +114,7 @@ async fn run(args: ImportConfig) -> RawbitResult<()> {
         recurse,
         no_preview,
         no_thumbnail,
+        dry_run,
         ..
     } = args;
 
@@ -157,11 +162,19 @@ async fn run(args: ImportConfig) -> RawbitResult<()> {
                      input_path,
                      ref output_prefix,
                  }| {
-                    let output_dir = output_dir.join(output_prefix);
-                    let job =
-                        Job::new(input_path, output_dir, filename_format, force, opts.clone());
+                    let config = JobConfig {
+                        input_path,
+                        output_dir: output_dir.join(output_prefix),
+                        filename_format,
+                        force,
+                        convert_opts: opts.clone(),
+                    };
 
-                    job.run()
+                    if dry_run {
+                        DryRunJob::new(config).run()
+                    } else {
+                        RawConvertJob::new(config).run()
+                    }
                 },
             )
             .collect::<Vec<_>>();
