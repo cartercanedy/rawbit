@@ -73,9 +73,11 @@ rawbit -i"./raw" -o"./dng" -F"%Y-%m-%d_{camera.model}_{lens.model}_{image.origin
 
 <pre>
 <span style="color: #F5F1DE">Usage:</span> <span style="color: #00aaaa">rawbit</span> <span style="color: #00aaaa">[OPTIONS]</span> <span style="color: #00aaaa">--out-dir</span><span style="color: #00aaaa"> </span><span style="color: #00aaaa">&lt;DIR&gt;</span> <span style="color: #00aaaa">&lt;--in-dir &lt;DIR&gt;|FILES&gt;</span>
+
 <span style="color: #aa5500">Arguments:</span>
   <span style="color: #00aaaa">[FILES]...</span>
           individual files to convert
+
 <span style="color: #aa5500">Options:</span>
   <span style="color: #00aaaa">-i</span>, <span style="color: #00aaaa">--in-dir</span><span style="color: #00aaaa"> </span><span style="color: #00aaaa">&lt;DIR&gt;</span>
           directory containing raw files to convert
@@ -93,9 +95,11 @@ rawbit -i"./raw" -o"./dng" -F"%Y-%m-%d_{camera.model}_{lens.model}_{image.origin
   <span style="color: #00aaaa">-r</span>, <span style="color: #00aaaa">--recurse</span>
           ingest images from subdirectories as well, preserving directory structure in the output
       <span style="color: #00aaaa">--no-preview</span>
-          Embed image preview in output DNG
+          don't embed image preview in output DNG
       <span style="color: #00aaaa">--no-thumbnail</span>
-          Embed image thumbnail in output DNG
+          don't embed image thumbnail in output DNG
+      <span style="color: #00aaaa">--dry-run</span>
+          only print run information, don't perform conversions or write any data.
   <span style="color: #00aaaa">-j</span>, <span style="color: #00aaaa">--n-threads</span><span style="color: #00aaaa"> [</span><span style="color: #00aaaa">&lt;N&gt;</span><span style="color: #00aaaa">]</span>
           number of threads to use while processing input images, defaults to number of CPUs
   <span style="color: #00aaaa">-q</span>, <span style="color: #00aaaa">--quiet</span>
