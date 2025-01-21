@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.13](https://github.com/cartercanedy/rawbit/compare/v0.1.12...v0.1.13) - 2025-01-21
+
+### Miscellaneous
+- *(ignore)* Bump clap from 4.5.23 to 4.5.27 (#43)
+
+### Contributors
+
+* @dependabot[bot]
 ## [0.1.12](https://github.com/cartercanedy/rawbit/compare/v0.1.11...v0.1.12) - 2024-12-21
 
 ### Added
