@@ -55,8 +55,8 @@ commit_parsers = [
   { message = "^deprecated", group = "deprecated" },
   { message = "^fix", group = "fixed" },
   { message = "^security", group = "security" },
+  { message = "^chore\\(dependencies\\)", skip = true },
   { message = "^chore", group = "miscellaneous"},
   { message = "^docs", group = "documentation"},
-  { message = "^.*\\(.*ignore.*\\)", skip = true },
   { message = "^.*", group = "other" },
 ]
