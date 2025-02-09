@@ -10,4 +10,4 @@ updates:
     schedule:
       interval: "weekly"
     commit-message:
-      prefix: "chore(ignore)"
+      prefix: "chore(dependencies)"
