@@ -23,7 +23,7 @@ tokio = { version = "1.42.0", features = ["macros", "rt-multi-thread", "windows-
 zips = "0.1.7"
 
 [dev-dependencies]
-tempfile = "3.17.1"
+tempfile = "3.18.0"
 
 [[bin]]
 name = "rawbit"
