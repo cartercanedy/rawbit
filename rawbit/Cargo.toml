@@ -19,7 +19,7 @@ phf = { version = "0.11.2", features = ["macros"] }
 rawler = "0.6.0"
 rayon = "1.10.0"
 smlog = "0.1.4"
-tokio = { version = "1.42.0", features = ["macros", "rt-multi-thread", "windows-sys"] }
+tokio = { version = "1.44.1", features = ["macros", "rt-multi-thread", "windows-sys"] }
 zips = "0.1.7"
 
 [dev-dependencies]
