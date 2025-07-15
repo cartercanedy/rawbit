@@ -365,8 +365,8 @@ mod path_tests {
         assert_eq!(ingest.len(), 20);
 
         for IngestItem {
-            ref input_path,
-            ref output_prefix,
+            input_path,
+            output_prefix,
         } in &ingest
         {
             assert!(temp_paths.contains(input_path));
@@ -392,8 +392,8 @@ mod path_tests {
         assert_eq!(ingest.len(), 10);
 
         for IngestItem {
-            ref input_path,
-            ref output_prefix,
+            input_path,
+            output_prefix,
         } in &ingest
         {
             assert!(temp_paths.contains(input_path));
