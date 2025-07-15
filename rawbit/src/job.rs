@@ -1,15 +1,21 @@
 use std::{
     error,
-    fs::{create_dir_all, remove_file, OpenOptions},
-    io::{self, BufReader, BufWriter},
+    fs::{create_dir_all, remove_file},
     path::{Path, PathBuf},
+};
+
+use tokio::{
+    fs::OpenOptions,
+    io::{self, AsyncReadExt as _},
 };
 
 use async_trait::async_trait;
 use rawler::{
+    RawlerError,
     decoders::{RawDecodeParams, RawMetadata},
     dng::{self, convert::ConvertParams},
-    get_decoder, RawFile, RawlerError,
+    get_decoder,
+    rawsource::RawSource,
 };
 
 use smlog::info;
@@ -55,33 +61,40 @@ fn build_output_filename(input_path: &Path, fmt: &FilenameFormat, md: &RawMetada
 }
 
 impl RawConvertJob {
-    fn run_blocking(self) -> Result<(), Error> {
+    async fn run_async(self) -> Result<(), Error> {
         let config = self.0;
 
-        let input = map_err!(
+        let mut input = map_err!(
             OpenOptions::new()
                 .read(true)
                 .write(false)
-                .open(&config.input_path),
+                .open(&config.input_path)
+                .await,
             Error::Io,
             "Couldn't open input RAW file",
         )?;
 
-        let mut raw_file = RawFile::new(config.input_path.as_path(), BufReader::new(input));
+        let mut buf = vec![];
+
+        map_err!(
+            input.read_to_end(&mut buf).await,
+            Error::Io,
+            format!("couldn't read from file: '{}'", config.input_path.display())
+        )?;
+
+        let raw_file = RawSource::new_from_slice(&buf[..]);
 
         let decoder = map_err!(
-            get_decoder(&mut raw_file),
+            get_decoder(&raw_file),
             Error::ImgOp,
             "no compatible RAW image decoder available",
         )?;
 
         let md = map_err!(
-            decoder.raw_metadata(&mut raw_file, RawDecodeParams::default()),
+            decoder.raw_metadata(&raw_file, &RawDecodeParams::default()),
             Error::ImgOp,
             "couldn't extract image metadata",
         )?;
-
-        map_err!(raw_file.file.rewind(), Error::Io, "input file io error",)?;
 
         let transformed_fname =
             build_output_filename(&config.input_path, config.filename_format, &md);
@@ -114,27 +127,35 @@ impl RawConvertJob {
             }?;
         }
 
-        let output_file = OpenOptions::new()
+        let output_file = std::fs::OpenOptions::new()
             .write(true)
             .create_new(true)
             .open(&output_path);
 
-        let mut output_file = BufWriter::new(map_err!(
-            output_file,
-            Error::Io,
-            format!("couldn't create output file: {}", output_path.display()),
-        )?);
+        map_err!(
+            tokio::task::spawn_blocking(move || {
+                let mut output_file = std::io::BufWriter::new(map_err!(
+                    output_file,
+                    Error::Io,
+                    format!("couldn't create output file: {}", output_path.display()),
+                )?);
 
-        info!("Writing DNG: \"{}\"", output_path.display());
+                info!("Writing DNG: \"{}\"", output_path.display());
 
-        let cvt_result = dng::convert::convert_raw_stream(
-            raw_file.file,
-            &mut output_file,
-            config.input_path.to_string_lossy(),
-            &config.convert_opts,
-        );
+                let cvt_result = dng::convert::convert_raw_source(
+                    &raw_file,
+                    &mut output_file,
+                    config.input_path.to_string_lossy(),
+                    &config.convert_opts,
+                );
 
-        map_err!(cvt_result, Error::ImgOp, "couldn't convert image to DNG",)
+                map_err!(cvt_result, Error::ImgOp, "couldn't convert image to DNG",)
+            })
+            .await
+            .map_err(Box::new),
+            Error::Other,
+            format!("async error")
+        )?
     }
 }
 
@@ -147,9 +168,7 @@ impl Job for RawConvertJob {
     }
 
     async fn run(self) -> Result<(), Error> {
-        tokio::task::spawn_blocking(|| self.run_blocking())
-            .await
-            .unwrap()
+        self.run_async().await
     }
 }
 
@@ -169,24 +188,29 @@ impl Job for DryRunJob {
         let input_file = OpenOptions::new()
             .read(true)
             .write(false)
-            .open(&config.input_path);
+            .open(&config.input_path)
+            .await;
 
-        let input_file = BufReader::new(map_err!(
+        let mut input_file = map_err!(
             input_file,
             Error::Io,
             format!("couldn't read file: {}", config.input_path.display())
-        )?);
-
-        let mut raw_file = RawFile::new(&config.input_path, input_file);
-
-        let decoder = map_err!(
-            get_decoder(&mut raw_file),
-            Error::ImgOp,
-            "no available decoder"
         )?;
 
+        let mut buf = vec![];
+        map_err!(
+            input_file.read_to_end(&mut buf).await,
+            Error::Io,
+            format!("couldn't read from file: '{}'", config.input_path.display())
+        )?;
+
+        let src = RawSource::new_from_slice(&buf[..]).with_path(&config.input_path);
+
+        let decoder = map_err!(get_decoder(&src), Error::ImgOp, "no available decoder")?;
+
+        const DECODE_PARAMS: RawDecodeParams = RawDecodeParams { image_index: 0 };
         let md = map_err!(
-            decoder.raw_metadata(&mut raw_file, RawDecodeParams { image_index: 0 }),
+            decoder.raw_metadata(&src, &DECODE_PARAMS),
             Error::ImgOp,
             format!(
                 "error while retreiving metadata from RAW: {}",
