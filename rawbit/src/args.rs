@@ -5,19 +5,19 @@ use std::{
 };
 
 use clap::{
-    arg,
+    ArgAction, Args, Parser, arg,
     builder::{
-        styling::{AnsiColor, Color, Style},
         IntoResettable, Styles,
+        styling::{AnsiColor, Color, Style},
     },
-    command, value_parser, ArgAction, Args, Parser,
+    command, value_parser,
 };
 use rayon::iter::{IntoParallelIterator as _, ParallelBridge as _, ParallelIterator as _};
 use smlog::{debug, warn};
 
 use rawler::decoders::supported_extensions;
 
-use crate::common::{map_err, AppError, RawbitResult};
+use crate::common::{AppError, RawbitResult, map_err};
 
 macro_rules! style {
     ($style:expr) => {
@@ -293,7 +293,7 @@ mod path_tests {
         io::Result,
         path::{Path, PathBuf},
     };
-    use tempfile::{tempdir, tempdir_in, TempDir};
+    use tempfile::{TempDir, tempdir, tempdir_in};
 
     use super::{IngestItem, RawSource};
 

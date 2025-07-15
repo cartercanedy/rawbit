@@ -11,11 +11,11 @@ use tokio::{
 
 use async_trait::async_trait;
 use rawler::{
+    RawlerError,
     decoders::{RawDecodeParams, RawMetadata},
     dng::{self, convert::ConvertParams},
     get_decoder,
     rawsource::RawSource,
-    RawlerError,
 };
 
 use smlog::info;

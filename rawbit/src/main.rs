@@ -20,12 +20,12 @@ use std::fmt::Display;
 use clap::Parser as _;
 use futures::future::join_all;
 use parse::FilenameFormat;
-use rawler::dng::{convert::ConvertParams, CropMode, DngCompression};
+use rawler::dng::{CropMode, DngCompression, convert::ConvertParams};
 use rayon::{
-    iter::{IntoParallelRefIterator as _, ParallelIterator as _},
     ThreadPoolBuilder,
+    iter::{IntoParallelRefIterator as _, ParallelIterator as _},
 };
-use smlog::{debug, error, ignore, log::LevelFilter, warn, Log};
+use smlog::{Log, debug, error, ignore, log::LevelFilter, warn};
 use tokio::{fs, runtime::Builder};
 
 mod args;
@@ -34,7 +34,7 @@ mod job;
 mod parse;
 
 use args::{ImportConfig, IngestItem, LogConfig};
-use common::{map_err, AppError, RawbitResult};
+use common::{AppError, RawbitResult, map_err};
 use job::{DryRunJob, Job, JobConfig, RawConvertJob};
 
 fn main() -> Result<(), u32> {

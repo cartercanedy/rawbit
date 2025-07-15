@@ -5,7 +5,7 @@
 use std::{borrow::Cow, cell::LazyCell, error, fmt};
 
 use chrono::NaiveDateTime;
-use phf::{phf_map, Map};
+use phf::{Map, phf_map};
 use rawler::decoders::RawMetadata;
 use smlog::warn;
 use zips::zip;
