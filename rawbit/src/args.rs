@@ -301,7 +301,7 @@ mod path_tests {
         let (input_dir, mut files) = setup_flat_dir(parent)?;
         let (nested_dir, nested_files) = setup_flat_dir(Some(input_dir.path()))?;
 
-        files.extend(nested_files.into_iter());
+        files.extend(nested_files);
 
         Ok(([input_dir, nested_dir], files))
     }
@@ -317,7 +317,7 @@ mod path_tests {
 
         let temp_paths = (0..10)
             .map(|i| {
-                let path = input_path.join(format!("temp_file_{}.ARW", i));
+                let path = input_path.join(format!("temp_file_{i}.ARW"));
                 File::create(&path).unwrap();
                 path
             })
@@ -342,10 +342,10 @@ mod path_tests {
         for IngestItem {
             input_path,
             output_prefix,
-        } in ingest.iter()
+        } in &ingest
         {
-            assert!(temp_paths.contains(&input_path));
-            assert_eq!(output_prefix.to_string_lossy().len(), 0)
+            assert!(temp_paths.contains(input_path));
+            assert_eq!(output_prefix.to_string_lossy().len(), 0);
         }
 
         Ok(())
@@ -367,7 +367,7 @@ mod path_tests {
         for IngestItem {
             ref input_path,
             ref output_prefix,
-        } in ingest.iter()
+        } in &ingest
         {
             assert!(temp_paths.contains(input_path));
 
@@ -394,7 +394,7 @@ mod path_tests {
         for IngestItem {
             ref input_path,
             ref output_prefix,
-        } in ingest.iter()
+        } in &ingest
         {
             assert!(temp_paths.contains(input_path));
 

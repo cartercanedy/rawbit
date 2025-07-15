@@ -6,15 +6,16 @@ use std::{
 
 use tokio::{
     fs::OpenOptions,
-    io::{self, AsyncReadExt as _}
+    io::{self, AsyncReadExt as _},
 };
 
 use async_trait::async_trait;
 use rawler::{
     decoders::{RawDecodeParams, RawMetadata},
     dng::{self, convert::ConvertParams},
+    get_decoder,
     rawsource::RawSource,
-    RawlerError, get_decoder
+    RawlerError,
 };
 
 use smlog::info;
@@ -81,16 +82,16 @@ impl RawConvertJob {
             format!("couldn't read from file: '{}'", config.input_path.display())
         )?;
 
-        let mut raw_file = RawSource::new_from_slice(&buf[..]);
+        let raw_file = RawSource::new_from_slice(&buf[..]);
 
         let decoder = map_err!(
-            get_decoder(&mut raw_file),
+            get_decoder(&raw_file),
             Error::ImgOp,
             "no compatible RAW image decoder available",
         )?;
 
         let md = map_err!(
-            decoder.raw_metadata(&mut raw_file, &RawDecodeParams::default()),
+            decoder.raw_metadata(&raw_file, &RawDecodeParams::default()),
             Error::ImgOp,
             "couldn't extract image metadata",
         )?;
@@ -149,7 +150,9 @@ impl RawConvertJob {
                 );
 
                 map_err!(cvt_result, Error::ImgOp, "couldn't convert image to DNG",)
-            }).await.map_err(|e| Box::new(e)),
+            })
+            .await
+            .map_err(Box::new),
             Error::Other,
             format!("async error")
         )?
@@ -201,18 +204,13 @@ impl Job for DryRunJob {
             format!("couldn't read from file: '{}'", config.input_path.display())
         )?;
 
-        let mut src = RawSource::new_from_slice(&buf[..])
-            .with_path(&config.input_path);
+        let src = RawSource::new_from_slice(&buf[..]).with_path(&config.input_path);
 
-        let decoder = map_err!(
-            get_decoder(&mut src),
-            Error::ImgOp,
-            "no available decoder"
-        )?;
+        let decoder = map_err!(get_decoder(&src), Error::ImgOp, "no available decoder")?;
 
         const DECODE_PARAMS: RawDecodeParams = RawDecodeParams { image_index: 0 };
         let md = map_err!(
-            decoder.raw_metadata(&mut src, &DECODE_PARAMS),
+            decoder.raw_metadata(&src, &DECODE_PARAMS),
             Error::ImgOp,
             format!(
                 "error while retreiving metadata from RAW: {}",
