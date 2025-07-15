@@ -6,4 +6,4 @@ publish = false
 
 [dependencies]
 clap = "4.5.37"
-rawbit = { version = "0.1.14", path = "../rawbit" }
+rawbit = { version = "0.1.15", path = "../rawbit" }
