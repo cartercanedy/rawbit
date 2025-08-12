@@ -274,7 +274,7 @@ impl<'a> FilenameFormat<'a> {
 }
 
 #[inline]
-fn expand(s: &str) -> Option<FmtItem> {
+fn expand(s: &str) -> Option<FmtItem<'_>> {
     Some(FmtItem::Metadata(MD_KIND_MAP.get(s)?.to_owned()))
 }
 
