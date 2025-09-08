@@ -5,5 +5,5 @@ edition = "2021"
 publish = false
 
 [dependencies]
-clap = "4.5.44"
+clap = "4.5.47"
 rawbit = { version = "0.1.15", path = "../rawbit" }

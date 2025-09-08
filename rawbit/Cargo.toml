@@ -13,7 +13,7 @@ readme = "../README.md"
 [dependencies]
 async-trait = "0.1.88"
 chrono = { version = "0.4.40", default-features = false, features = ["std", "winapi"] }
-clap = { version = "4.5.44", features = ["derive", "env", "string", "unicode"] }
+clap = { version = "4.5.47", features = ["derive", "env", "string", "unicode"] }
 futures = "0.3.31"
 phf = { version = "0.11.2", features = ["macros"] }
 rawler = "0.7.0"
