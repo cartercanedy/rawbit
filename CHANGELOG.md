@@ -1,5 +1,6 @@
 # Changelog
 
+
 ## [0.1.14](https://github.com/cartercanedy/rawbit/compare/v0.1.13...v0.1.14) - 2025-04-08
 
 ### Security
