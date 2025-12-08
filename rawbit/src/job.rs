@@ -174,6 +174,8 @@ impl Job for RawConvertJob {
 
 pub struct DryRunJob(JobConfig);
 
+const DECODE_PARAMS: RawDecodeParams = RawDecodeParams { image_index: 0 };
+
 #[async_trait]
 impl Job for DryRunJob {
     fn new(config: JobConfig) -> Self {
@@ -207,8 +209,6 @@ impl Job for DryRunJob {
         let src = RawSource::new_from_slice(&buf[..]).with_path(&config.input_path);
 
         let decoder = map_err!(get_decoder(&src), Error::ImgOp, "no available decoder")?;
-
-        const DECODE_PARAMS: RawDecodeParams = RawDecodeParams { image_index: 0 };
         let md = map_err!(
             decoder.raw_metadata(&src, &DECODE_PARAMS),
             Error::ImgOp,
