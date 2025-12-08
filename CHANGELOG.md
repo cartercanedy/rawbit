@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.16](https://github.com/cartercanedy/rawbit/compare/v0.1.15...v0.1.16) - 2025-12-08
+
+### Fixed
+- fix tokio breakages (by @cartercanedy)
+
+### Other
+- clippy (by @cartercanedy)
+
+### Contributors
+
+* @cartercanedy
+* @dependabot[bot]
+
 ## [0.1.14](https://github.com/cartercanedy/rawbit/compare/v0.1.13...v0.1.14) - 2025-04-08
 
 ### Security
