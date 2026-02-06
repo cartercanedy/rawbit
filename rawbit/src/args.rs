@@ -5,12 +5,12 @@ use std::{
 };
 
 use clap::{
-    ArgAction, Args, Parser, arg,
+    ArgAction, Args, Parser,
     builder::{
         IntoResettable, Styles,
         styling::{AnsiColor, Color, Style},
     },
-    command, value_parser,
+    value_parser,
 };
 use rayon::iter::{IntoParallelIterator as _, ParallelBridge as _, ParallelIterator as _};
 use smlog::{debug, warn};
