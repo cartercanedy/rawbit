@@ -150,4 +150,4 @@ This project utilizes the same library that powers DNGLab, so I owe a huge thank
 
 [DNGLab/Rawler](https://github.com/dnglab/dnglab/blob/main/rawler): Rust-native RAW image manipulation tools from the ground-up  
 [rayon](https://github.com/rayon-rs/rayon)/[tokio](https://github.com/tokio-rs/tokio): For making fearless concurrency a peice of cake  
-[Adam Perkowski](https://github.com/adamperkowski): Contributing CI and package manager support  
+
