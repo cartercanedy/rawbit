@@ -161,7 +161,6 @@ impl<'a> FilenameFormat<'a> {
 
         let mut items = vec![];
         let mut to_parse = fmt;
-
         let mut consumed = 0;
         let mut state = ScanState::Start;
 
@@ -224,7 +223,7 @@ impl<'a> FilenameFormat<'a> {
                                 return Err(AppError::FmtStrParse(Error::invalid_expansion(
                                     consumed,
                                     s.len(),
-                                    to_parse,
+                                    fmt,
                                 )));
                             }
 
@@ -234,17 +233,23 @@ impl<'a> FilenameFormat<'a> {
                         ScanState::ExpansionBody => {
                             assert!(
                                 s.starts_with(OPEN_EXPANSION),
-                                "An expansion was interpreted incorrectly: fmt: {to_parse}, seq: {s}"
+                                "An expansion was interpreted incorrectly: fmt: {fmt}, seq: {s}"
                             );
 
                             if s.ends_with(CLOSE_EXPANSION) {
-                                expand(&s[1..s.len() - 1]).ok_or(AppError::FmtStrParse(
-                                    Error::invalid_expansion(consumed, s.len(), to_parse),
-                                ))?
+                                expand(&s[1..s.len() - 1]).ok_or_else(|| {
+                                    AppError::FmtStrParse(Error::invalid_expansion(
+                                        consumed,
+                                        s.len(),
+                                        fmt,
+                                    ))
+                                })?
                             } else {
-                                return Err(AppError::FmtStrParse(
-                                    Error::unterminated_expansion(consumed, s.len(), to_parse),
-                                ));
+                                return Err(AppError::FmtStrParse(Error::unterminated_expansion(
+                                    consumed,
+                                    s.len(),
+                                    fmt,
+                                )));
                             }
                         }
 
@@ -257,7 +262,7 @@ impl<'a> FilenameFormat<'a> {
                 return Err(AppError::FmtStrParse(Error::new(
                     consumed,
                     to_parse.len() - consumed,
-                    to_parse,
+                    fmt,
                     ErrorKind::Unknown,
                 )));
             }
@@ -280,9 +285,8 @@ fn expand(s: &str) -> Option<FmtItem<'_>> {
 
 #[cfg(test)]
 mod test_parse {
-    use crate::parse::FilenameFormat;
+    use super::{FilenameFormat, FmtItem, MetadataKind, OPEN_EXPANSION};
 
-    use super::{FmtItem, MetadataKind, OPEN_EXPANSION};
     #[test]
     fn parses_expansions_and_strftime_ok() {
         assert!(FilenameFormat::parse("%Y-%m-%d_{camera.make}").is_ok());

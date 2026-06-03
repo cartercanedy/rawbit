@@ -12,7 +12,8 @@
 #![allow(
     clippy::enum_glob_use,
     clippy::multiple_crate_versions,
-    clippy::module_name_repetitions
+    clippy::module_name_repetitions,
+    clippy::too_many_lines
 )]
 
 use std::fmt::Display;

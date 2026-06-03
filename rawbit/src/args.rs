@@ -307,10 +307,7 @@ mod path_tests {
     }
 
     fn setup_flat_dir(parent: Option<&Path>) -> Result<(TempDir, Vec<PathBuf>)> {
-        let input_dir = match parent {
-            Some(dir) => tempdir_in(dir),
-            None => tempdir(),
-        }?;
+        let input_dir = parent.map_or_else(tempdir, tempdir_in)?;
 
         let input_path = input_dir.path();
         assert!(input_path.exists());
