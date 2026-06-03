@@ -7,7 +7,7 @@ use std::{borrow::Cow, cell::LazyCell, error, fmt};
 use chrono::NaiveDateTime;
 use phf::{Map, phf_map};
 use rawler::decoders::RawMetadata;
-use smlog::warn;
+use smlog::{log, warn};
 use zips::zip;
 
 use crate::common::{AppError, RawbitResult};
@@ -224,7 +224,7 @@ impl<'a> FilenameFormat<'a> {
                                 return Err(AppError::FmtStrParse(Error::invalid_expansion(
                                     consumed,
                                     s.len(),
-                                    to_parse,
+                                    fmt,
                                 )));
                             }
 
@@ -234,16 +234,18 @@ impl<'a> FilenameFormat<'a> {
                         ScanState::ExpansionBody => {
                             assert!(
                                 s.starts_with(OPEN_EXPANSION),
-                                "An expansion was interpreted incorrectly: fmt: {to_parse}, seq: {s}"
+                                "An expansion was interpreted incorrectly: fmt: {fmt}, seq: {s}"
                             );
 
                             if s.ends_with(CLOSE_EXPANSION) {
-                                expand(&s[1..s.len() - 1]).ok_or(AppError::FmtStrParse(
-                                    Error::invalid_expansion(consumed, s.len(), to_parse),
-                                ))?
+                                expand(&s[1..s.len() - 1]).ok_or_else(|| {
+                                    AppError::FmtStrParse(
+                                        Error::invalid_expansion(consumed, s.len(), fmt),
+                                    )
+                                })?
                             } else {
                                 return Err(AppError::FmtStrParse(
-                                    Error::unterminated_expansion(consumed, s.len(), to_parse),
+                                    Error::unterminated_expansion(consumed, s.len(), fmt),
                                 ));
                             }
                         }
@@ -257,7 +259,7 @@ impl<'a> FilenameFormat<'a> {
                 return Err(AppError::FmtStrParse(Error::new(
                     consumed,
                     to_parse.len() - consumed,
-                    to_parse,
+                    fmt,
                     ErrorKind::Unknown,
                 )));
             }
@@ -280,9 +282,8 @@ fn expand(s: &str) -> Option<FmtItem<'_>> {
 
 #[cfg(test)]
 mod test_parse {
-    use crate::parse::FilenameFormat;
+    use super::{FmtItem, MetadataKind, OPEN_EXPANSION, FilenameFormat};
 
-    use super::{FmtItem, MetadataKind, OPEN_EXPANSION};
     #[test]
     fn parses_expansions_and_strftime_ok() {
         assert!(FilenameFormat::parse("%Y-%m-%d_{camera.make}").is_ok());
@@ -421,3 +422,4 @@ impl fmt::Display for Error {
 }
 
 impl error::Error for Error {}
+
