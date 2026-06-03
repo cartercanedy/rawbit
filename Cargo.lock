@@ -1102,9 +1102,9 @@ dependencies = [
 
 [[package]]
 name = "rawler"
-version = "0.7.1"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5a888d0a4bf6a13c112c88d279d2d4a1f60dd8ca520fdd65193de54687cb9d2d"
+checksum = "04f4cc35c23969a4a834e0b117c7da41ace812eb9053b5effc3fc5c77d114677"
 dependencies = [
  "backtrace",
  "bitstream-io",
